@@ -1,7 +1,15 @@
+
+global using WebApiAssignemnt.Models;
+global using WebApiAssignemnt.Data;
+using WebApiAssignemnt.Services.UserDetailService;
 using Microsoft.AspNetCore.Authentication.Negotiate;
+using WebApiAssignemnt.Services.MessageDetailService;
+using WebApiAssignemnt.AutoMapperConfig;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddDbContext<DataContext>();
+//options =>
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext") ?? throw new InvalidOperationException("Connection string 'DBContext' not found."))
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -9,14 +17,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-   .AddNegotiate();
+builder.Services.AddScoped<IUserDetailService, UserDetailService>();
+builder.Services.AddScoped<ISendMessageService, SendMessageService>();
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-builder.Services.AddAuthorization(options =>
-{
-    // By default, all incoming requests will be authorized according to the default policy.
-    options.FallbackPolicy = options.DefaultPolicy;
-});
+//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+//   .AddNegotiate();
+
+//builder.Services.AddAuthorization(options =>
+//{
+//    // By default, all incoming requests will be authorized according to the default policy.
+//    options.FallbackPolicy = options.DefaultPolicy;
+//});
 
 var app = builder.Build();
 
