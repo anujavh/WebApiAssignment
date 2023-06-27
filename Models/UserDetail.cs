@@ -11,5 +11,13 @@ namespace WebApiAssignemnt.Models
         public string UserName { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+
+        [ForeignKey("senderId")]
+        public List<MessageDetails> sentMessages { get; set; }
+
+        [ForeignKey("receiverId")]
+        public List<MessageDetails> receivedMessages { get; set; }
+
+
     }
 }

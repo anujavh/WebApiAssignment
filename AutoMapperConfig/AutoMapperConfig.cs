@@ -7,11 +7,18 @@ namespace WebApiAssignemnt.AutoMapperConfig
     {
         public AutoMapperConfig() {
             CreateMap<UserDetail, RespGetUserListDto>().ReverseMap();
-            CreateMap<UserDetail, getUserListDto>().ReverseMap();
+            CreateMap<UserDetail, ReqGetUserListDto>().ReverseMap();
             CreateMap<UserDetail, ResUserRegistrationDto>().ReverseMap();            
 
             CreateMap<MessageDetails, ReqSendMessageDto>().ReverseMap();
             CreateMap<MessageDetails, RespSendMessageDto>().ReverseMap();
+
+
+            CreateMap<MessageDetails, ReqGetMessageHistoryDto>().ReverseMap();
+            CreateMap<MessageDetails, RespGetMessageHistoryDto>().ReverseMap();
+
+            CreateMap<MessageDetails, ReqEditMessageDto>().ReverseMap();
+            CreateMap<MessageDetails, RespEditMessageDto>().ReverseMap();
 
         }
     }

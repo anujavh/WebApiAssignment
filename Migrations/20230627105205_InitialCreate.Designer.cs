@@ -12,8 +12,8 @@ using WebApiAssignemnt.Data;
 namespace WebApiAssignemnt.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230623112938_Add MessageDetails Model")]
-    partial class AddMessageDetailsModel
+    [Migration("20230627105205_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,13 +40,18 @@ namespace WebApiAssignemnt.Migrations
                     b.Property<DateTime>("MessageTimestamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("receiverId")
+                    b.Property<int?>("receiverId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("senderId")
+                    b.Property<int?>("senderId")
                         .HasColumnType("int");
 
                     b.HasKey("MessageId");
+
+                    b.HasIndex("receiverId");
+
+                    b.HasIndex("senderId");
 
                     b.ToTable("MessageDetails");
                 });
@@ -74,6 +79,29 @@ namespace WebApiAssignemnt.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserDeatails");
+                });
+
+            modelBuilder.Entity("WebApiAssignemnt.Models.MessageDetails", b =>
+                {
+                    b.HasOne("WebApiAssignemnt.Models.UserDetail", "ReceiverDetails")
+                        .WithMany("receivedMessages")
+                        .HasForeignKey("receiverId")
+                        .IsRequired();
+
+                    b.HasOne("WebApiAssignemnt.Models.UserDetail", "SenderDetails")
+                        .WithMany("sentMessages")
+                        .HasForeignKey("senderId");
+
+                    b.Navigation("ReceiverDetails");
+
+                    b.Navigation("SenderDetails");
+                });
+
+            modelBuilder.Entity("WebApiAssignemnt.Models.UserDetail", b =>
+                {
+                    b.Navigation("receivedMessages");
+
+                    b.Navigation("sentMessages");
                 });
 #pragma warning restore 612, 618
         }

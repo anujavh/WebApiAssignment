@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\WebApiAssignment\\WebApiAssignemnt.csproj": {}
+    "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\WebApiAssignment\\WebApiAssignemnt.csproj": {
+    "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\WebApiAssignment\\WebApiAssignemnt.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj",
         "projectName": "WebApiAssignemnt",
-        "projectPath": "C:\\Users\\Admin\\WebApiAssignment\\WebApiAssignemnt.csproj",
+        "projectPath": "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\WebApiAssignment\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -57,6 +57,10 @@
               "target": "Package",
               "version": "[6.1.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.8, )"
+            },
             "Microsoft.AspNetCore.Authentication.Negotiate": {
               "target": "Package",
               "version": "[6.0.18, )"
@@ -89,9 +93,17 @@
               "target": "Package",
               "version": "[7.0.7, )"
             },
+            "NLog.Extensions.Logging": {
+              "target": "Package",
+              "version": "[5.3.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[7.0.6, )"
             }
           },
           "imports": [

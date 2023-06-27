@@ -7,31 +7,35 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using WebApiAssignemnt.Dto;
+using WebApiAssignemnt.Services.LogService;
 using WebApiAssignemnt.Services.UserDetailService;
+
 
 namespace WebApiAssignemnt.Controller
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Authorize]
     public class UserDetailsController : ControllerBase
     {
-        private readonly ILogger<UserDetailsController> _logger;
+        private readonly ILogger<UserDetailsController> _logger; 
+
         private readonly IUserDetailService _userDetailService;
-        public UserDetailsController(IUserDetailService userDetailService, ILogger<UserDetailsController> logger)
+        public UserDetailsController(IUserDetailService userDetailService,  ILogger<UserDetailsController> logger)
         {
             _userDetailService = userDetailService;
             _logger = logger;
-
         }
 
         // GET: api/Users
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
+            //_logger.LogInformation("Post message method called "); 
             var res = await _userDetailService.GetAllUsers();
             return Ok(res);
         }
@@ -44,40 +48,7 @@ namespace WebApiAssignemnt.Controller
             if (result == null) { return NotFound("User doesnot exists."); }
             return Ok(result);
         }
-
-        //// PUT: api/Users/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutUser(int id, UserDetail user)
-        //{
-        //    if (id != user.UserId)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(user).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
-
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+         
 
         [HttpPost("register")]
         public async Task<ActionResult<ResUserRegistrationDto>> RegisterUser(ReqUserRegistrationDto user)

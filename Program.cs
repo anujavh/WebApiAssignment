@@ -2,11 +2,21 @@
 global using WebApiAssignemnt.Models;
 global using WebApiAssignemnt.Data;
 using WebApiAssignemnt.Services.UserDetailService;
-using Microsoft.AspNetCore.Authentication.Negotiate;
 using WebApiAssignemnt.Services.MessageDetailService;
 using WebApiAssignemnt.AutoMapperConfig;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder();
+
+builder.Logging.ClearProviders().AddConsole();
+
+builder.Logging.AddConsole();
+
+
 builder.Services.AddDbContext<DataContext>();
 //options =>
     //options.UseSqlServer(builder.Configuration.GetConnectionString("DBContext") ?? throw new InvalidOperationException("Connection string 'DBContext' not found."))
@@ -15,11 +25,24 @@ builder.Services.AddDbContext<DataContext>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 builder.Services.AddScoped<IUserDetailService, UserDetailService>();
 builder.Services.AddScoped<ISendMessageService, SendMessageService>();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
+
+
+builder.Services.AddAuthentication().AddJwtBearer();
 
 //builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
 //   .AddNegotiate();
@@ -41,7 +64,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
