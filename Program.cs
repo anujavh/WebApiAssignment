@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using WebApiAssignemnt.Services.LogService;
 
 var builder = WebApplication.CreateBuilder(args);
 //var builder = WebApplication.CreateBuilder();
@@ -40,7 +41,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IUserDetailService, UserDetailService>();
 builder.Services.AddScoped<ISendMessageService, SendMessageService>();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-
+builder.Services.AddScoped<ILogService, LogService>();
 
 builder.Services.AddAuthentication().AddJwtBearer();
 

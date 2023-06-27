@@ -35,7 +35,7 @@ namespace WebApiAssignemnt.Services.MessageDetailService
             try
             {
                 var messageDetails = await _context.MessageDetails.FirstOrDefaultAsync(x => x.receiverId == messageId);
-                 
+
                 if (messageDetails != null)
                 {
                     _context.MessageDetails.Remove(messageDetails);

@@ -19,36 +19,41 @@ using WebApiAssignemnt.Services.UserDetailService;
 namespace WebApiAssignemnt.Controller
 {
     [Route("api/[controller]")]
-    [ApiController, Authorize]
+    [ApiController]
     public class UserDetailsController : ControllerBase
     {
-        private readonly ILogger<UserDetailsController> _logger; 
+        private readonly ILogger<UserDetailsController> _logger;
 
         private readonly IUserDetailService _userDetailService;
-        public UserDetailsController(IUserDetailService userDetailService,  ILogger<UserDetailsController> logger)
+        private readonly ILogService _logService;
+
+        public UserDetailsController(IUserDetailService userDetailService, ILogger<UserDetailsController> logger, ILogService logService)
         {
             _userDetailService = userDetailService;
             _logger = logger;
+            _logService = logService;
         }
 
         // GET: api/Users
         [HttpGet("GetAllUsers")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
-            //_logger.LogInformation("Post message method called "); 
+            Task<string> strIp = GetIpAddress();
             var res = await _userDetailService.GetAllUsers();
             return Ok(res);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<UserDetail>> GetUser(int id)
         {
             var result = await _userDetailService.GetById(id);
             if (result == null) { return NotFound("User doesnot exists."); }
             return Ok(result);
         }
-         
+
 
         [HttpPost("register")]
         public async Task<ActionResult<ResUserRegistrationDto>> RegisterUser(ReqUserRegistrationDto user)
@@ -69,6 +74,7 @@ namespace WebApiAssignemnt.Controller
         }
 
         [HttpPost("login")]
+        [Authorize]
         public async Task<ActionResult<ResLoginUserDto>> LoginUser(ReqLoginUserDto loginUser)
         {
             if (loginUser.Email == null) { return this.ValidationProblem(); } //status code 400
@@ -81,6 +87,7 @@ namespace WebApiAssignemnt.Controller
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _userDetailService.DelateUserDetails(id);
@@ -100,5 +107,13 @@ namespace WebApiAssignemnt.Controller
             return false;
         }
 
+        private async Task<string> GetIpAddress()
+        {
+            string ip_address = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var ip = await _logService.AddLogRequest(ip_address);
+            return "Ok";
+
+        }
     }
 }

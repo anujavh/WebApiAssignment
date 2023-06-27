@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WebApiAssignemnt.Dto;
+using WebApiAssignemnt.Services.LogService;
 using WebApiAssignemnt.Services.MessageDetailService;
 
 namespace WebApiAssignemnt.Controller
@@ -12,10 +14,13 @@ namespace WebApiAssignemnt.Controller
     {
         private readonly ISendMessageService _messageService;
         private readonly ILogger<SendMessageController> _logger;
-        public SendMessageController(ISendMessageService sendMessageService, ILogger<SendMessageController> logger)
+
+        private readonly ILogService _logService;
+        public SendMessageController(ISendMessageService sendMessageService, ILogger<SendMessageController> logger, ILogService logService)
         {
             _messageService = sendMessageService;
             _logger = logger;
+            _logService = logService;
         }
 
         [HttpPost]
@@ -41,15 +46,21 @@ namespace WebApiAssignemnt.Controller
         [HttpDelete("deleteMessage")]
         public async Task<IActionResult> deleteMessage(int id)
         {
-            _logger.LogInformation("Delete message method called ");
-            var result = await _messageService.DeleteMessage(id);
-
-            if (result == null)
+            try
             {
-                return NotFound("Message ID not found");
-            }
+                var result = await _messageService.DeleteMessage(id);
 
-            return Ok(result);
+                if (result == null)
+                {
+                    return NotFound("Message ID not found");
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         [HttpGet("id")]
@@ -66,9 +77,9 @@ namespace WebApiAssignemnt.Controller
         public async Task<ActionResult<List<RespGetMessageHistoryDto>>> GetMessageDetailsListAsync(int id, DateTime beforeTime, int count, int sort)
         {
             _logger.LogInformation("Get message method called ");
-            if (beforeTime == null)
+            if (beforeTime.ToString() == null || beforeTime.ToString() == "01-01-0001 00:00:00")
                 beforeTime = DateTime.Now;
-            if (sort == 0 )
+            if (sort == 0)
                 sort = 1;
             if (count == 0)
                 count = 20;

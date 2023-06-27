@@ -44,6 +44,7 @@ namespace WebApiAssignemnt.Data
         //public DbSet<WebApiAssignemnt.Data.Entities.User> User { get; set; } = default!;
         public DbSet<UserDetail> UserDetails { get; set; } = default!;
         public DbSet<MessageDetails> MessageDetails { get; set; } = default!;
+        public DbSet<LogRequests> LogRequests { get; set; } = default!;
 
     }
 }
