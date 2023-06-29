@@ -1,10 +1,11 @@
-﻿using WebApiAssignemnt.Dto;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApiAssignemnt.Dto;
 
 namespace WebApiAssignemnt.Services.LogService
 {
-    public interface ILogService
+    public interface ICustomLogService
     {
-        public Task<LogRequests> AddLogRequest(string IpAddress);
+        public Task<LogRequests> AddLogRequest(string IpAddress, string userName, HttpRequest request);
 
         public Task<List<LogRequests>> GetAllLogRequests(DateTime endTime, DateTime startTime);
 

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text;
 using WebApiAssignemnt.Dto;
 using WebApiAssignemnt.Services.LogService;
 using WebApiAssignemnt.Services.MessageDetailService;
@@ -15,12 +16,15 @@ namespace WebApiAssignemnt.Controller
         private readonly ISendMessageService _messageService;
         private readonly ILogger<SendMessageController> _logger;
 
-        private readonly ILogService _logService;
-        public SendMessageController(ISendMessageService sendMessageService, ILogger<SendMessageController> logger, ILogService logService)
+        private readonly ICustomLogService _logService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public SendMessageController(ISendMessageService sendMessageService, ILogger<SendMessageController> logger, ICustomLogService logService, IHttpContextAccessor httpContextAccessor)
         {
             _messageService = sendMessageService;
             _logger = logger;
             _logService = logService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
@@ -35,10 +39,32 @@ namespace WebApiAssignemnt.Controller
 
         // GET: api/Users/5
         [HttpPut("EditMessage")]
+
         public async Task<ActionResult<RespSendMessageDto>> EditMessage(ReqEditMessageDto editMessage)
         {
             _logger.LogInformation("Edit message method called ");
             var result = await _messageService.UpdateMessage(editMessage);
+            var request = Request.HttpContext.Request;
+            //var bodyStr = "";
+            //var req = Request.HttpContext.Request;
+
+            //// Allows using several time the stream in ASP.Net Core
+            ////req.EnableRewind();
+
+            //// Arguments: Stream, Encoding, detect encoding, buffer size 
+            //// AND, the most important: keep stream opened
+            //using (StreamReader reader
+            //          = new StreamReader(req.Body, Encoding.UTF8, true, 1024, true))
+            //{
+            //    bodyStr = reader.ReadToEnd();
+            //}
+
+            //// Rewind, so the core is not lost when it looks at the body for the request
+            //req.Body.Position = 0;
+
+            //// Do whatever works with bodyStr here
+
+            GetRemoteIpLogData(request);
             if (result == null) { return NotFound("User doesnot exists."); }
             return Ok(result);
         }
@@ -49,7 +75,7 @@ namespace WebApiAssignemnt.Controller
             try
             {
                 var result = await _messageService.DeleteMessage(id);
-
+                GetRemoteIpLogData(Request.HttpContext.Request);
                 if (result == null)
                 {
                     return NotFound("Message ID not found");
@@ -67,7 +93,10 @@ namespace WebApiAssignemnt.Controller
         public async Task<ActionResult<RespGetMessageHistoryDto>> GetMessageDetailsAsync(int id)
         {
             var result = await _messageService.GetMessageDetailsAsync(id);
+
+            GetRemoteIpLogData(Request.HttpContext.Request);
             if (result == null) { return NotFound("Message details not found."); }
+
             return Ok(result);
         }
 
@@ -84,9 +113,27 @@ namespace WebApiAssignemnt.Controller
             if (count == 0)
                 count = 20;
             var result = await _messageService.GetMessageDetailsListAsync(id, beforeTime, count, sort);
+            GetRemoteIpLogData(Request.HttpContext.Request); 
             if (result == null) { return NotFound("Message details not found."); }
             return Ok(result);
         }
+
+        private async void GetRemoteIpLogData(HttpRequest request)
+        {
+            string username = await GetLoginUserName();
+            string? ip_address = Request.HttpContext.Connection.RemoteIpAddress?.ToString();//This will return ::1 if executing api on same computer
+            
+            var result = await _logService.AddLogRequest(ip_address, username, request);
+            // var ip = logRequests;
+            //return "Ok";
+        }
+
+        private async Task<string> GetLoginUserName()
+        {
+            string username = _httpContextAccessor.HttpContext.User.Identity.Name;
+            return username.ToString();
+        }
+
 
     }
 }

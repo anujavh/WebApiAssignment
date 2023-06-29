@@ -41,7 +41,11 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IUserDetailService, UserDetailService>();
 builder.Services.AddScoped<ISendMessageService, SendMessageService>();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<ICustomLogService, CustomLogService>();
+
+builder.Services.AddHttpContextAccessor();
+
+
 
 builder.Services.AddAuthentication().AddJwtBearer();
 

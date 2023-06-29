@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityModel;
+﻿using System.Security.Claims;
+using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using WebApiAssignemnt.Dto;
 using WebApiAssignemnt.Services.LogService;
 using WebApiAssignemnt.Services.UserDetailService;
@@ -25,13 +16,15 @@ namespace WebApiAssignemnt.Controller
         private readonly ILogger<UserDetailsController> _logger;
 
         private readonly IUserDetailService _userDetailService;
-        private readonly ILogService _logService;
+        private readonly ICustomLogService _logService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserDetailsController(IUserDetailService userDetailService, ILogger<UserDetailsController> logger, ILogService logService)
+        public UserDetailsController(IUserDetailService userDetailService, ILogger<UserDetailsController> logger, ICustomLogService logService, IHttpContextAccessor httpContextAccessor)
         {
             _userDetailService = userDetailService;
             _logger = logger;
             _logService = logService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/Users
@@ -39,17 +32,17 @@ namespace WebApiAssignemnt.Controller
         [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
-            Task<string> strIp = GetIpAddress();
             var res = await _userDetailService.GetAllUsers();
+            GetRemoteIpLogData( Request.HttpContext.Request);
             return Ok(res);
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<UserDetail>> GetUser(int id)
         {
             var result = await _userDetailService.GetById(id);
+            GetRemoteIpLogData(Request.HttpContext.Request);
             if (result == null) { return NotFound("User doesnot exists."); }
             return Ok(result);
         }
@@ -107,13 +100,27 @@ namespace WebApiAssignemnt.Controller
             return false;
         }
 
-        private async Task<string> GetIpAddress()
+        private async void GetRemoteIpLogData(HttpRequest request)
         {
-            string ip_address = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
+            string userName = await GetLoginUserName();
+            string? ip_address = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            var ip = await _logService.AddLogRequest(ip_address);
-            return "Ok";
+            var result = await _logService.AddLogRequest(ip_address, userName, request);
+            //var ip = logRequests;
+            //return "Ok";
 
         }
+
+        private async Task<int> GetUserID(UserDetail user)
+        {
+            await _userDetailService.GetById(user.Id);
+            return 1;
+        }
+        private async Task<string> GetLoginUserName()
+        {
+            string username = _httpContextAccessor.HttpContext.User.Identity.Name;
+            return username;
+        }
+
     }
 }

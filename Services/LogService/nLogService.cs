@@ -17,7 +17,7 @@ namespace WebApiAssignemnt.Services.LogService
         {
             services.AddMvc();
 
-            services.AddSingleton<ILogService, LogService>();
+            services.AddSingleton<ICustomLogService, CustomLogService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  

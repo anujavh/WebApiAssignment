@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj": {}
+    "C:\\Users\\Admin\\source\\repos\\WebApiAssignment\\WebApiAssignemnt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj": {
+    "C:\\Users\\Admin\\source\\repos\\WebApiAssignment\\WebApiAssignemnt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\source\\repos\\WebApiAssignment\\WebApiAssignemnt.csproj",
         "projectName": "WebApiAssignemnt",
-        "projectPath": "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\WebApiAssignemnt.csproj",
+        "projectPath": "C:\\Users\\Admin\\source\\repos\\WebApiAssignment\\WebApiAssignemnt.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Admin\\Source\\Repos\\WebApiAssignment\\obj\\",
+        "outputPath": "C:\\Users\\Admin\\source\\repos\\WebApiAssignment\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

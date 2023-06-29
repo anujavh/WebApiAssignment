@@ -88,12 +88,12 @@ namespace WebApiAssignemnt.Services.MessageDetailService
 
                 if (sort == 1)
                 {
-                    var sortResult = listHistory.OrderBy(i => i.messageTimestamp).Take(count).ToList();
+                    var sortResult = listHistory.OrderBy(i => i.MessageTimestamp).Take(count).ToList();
                     return _mapper.Map<List<RespGetMessageHistoryDto>>(sortResult);
                 }
                 else
                 {
-                    var sortResult1 = listHistory.OrderByDescending(i => i.messageTimestamp).Take(count).ToList();
+                    var sortResult1 = listHistory.OrderByDescending(i => i.MessageTimestamp).Take(count).ToList();
                     return _mapper.Map<List<RespGetMessageHistoryDto>>(sortResult1);
                 }
             }
@@ -102,11 +102,11 @@ namespace WebApiAssignemnt.Services.MessageDetailService
 
 
 
-        public async Task<List<RespGetMessageHistoryDto>> GetMessageDetailsAsync(int userId)
+        public async Task<List<RespGetMessageHistoryDto>> GetMessageDetailsAsync(int id)
         {
             try
             {
-                var result = await _context.MessageDetails.Where(x => x.senderId == userId).FirstOrDefaultAsync();
+                var result = await _context.MessageDetails.Where(x => x.MessageId == id).FirstOrDefaultAsync();
                 List<RespGetMessageHistoryDto> listHistory = new List<RespGetMessageHistoryDto>();
 
                 return _mapper.Map<List<RespGetMessageHistoryDto>>(result);

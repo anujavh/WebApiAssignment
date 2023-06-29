@@ -10,17 +10,17 @@ namespace WebApiAssignemnt.Controller
     [ApiController]
     public class LogsController : ControllerBase
     {
-        private readonly ILogService _logService;
+        private readonly ICustomLogService _logService;
 
-        public LogsController(ILogService logService)
+        public LogsController(ICustomLogService logService)
         {
             _logService = logService;
         }
 
         [HttpPost]
-        public async Task<ActionResult<LogRequests>> AddLogRequest(string IpAddress ) //LogRequests logRequests)
+        public async Task<ActionResult<LogRequests>> AddLogRequest(string IpAddress , string UserName, HttpRequest request) //LogRequests logRequests)
         {
-            var result = await _logService.AddLogRequest(IpAddress);
+            var result = await _logService.AddLogRequest(IpAddress, UserName, request);
             return Ok(result);
         }
 
