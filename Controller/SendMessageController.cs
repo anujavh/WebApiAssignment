@@ -37,6 +37,7 @@ namespace WebApiAssignemnt.Controller
             return Ok(result);
         }
 
+
         // GET: api/Users/5
         [HttpPut("EditMessage")]
 
@@ -44,9 +45,12 @@ namespace WebApiAssignemnt.Controller
         {
             _logger.LogInformation("Edit message method called ");
             var result = await _messageService.UpdateMessage(editMessage);
+
+
+
             var request = Request.HttpContext.Request;
-            //var bodyStr = "";
-            //var req = Request.HttpContext.Request;
+            var bodyStr = "";
+            var req = Request.HttpContext.Request;
 
             //// Allows using several time the stream in ASP.Net Core
             ////req.EnableRewind();
@@ -89,16 +93,16 @@ namespace WebApiAssignemnt.Controller
             }
         }
 
-        [HttpGet("id")]
-        public async Task<ActionResult<RespGetMessageHistoryDto>> GetMessageDetailsAsync(int id)
-        {
-            var result = await _messageService.GetMessageDetailsAsync(id);
+        //[HttpGet("id")]
+        //public async Task<ActionResult<RespGetMessageHistoryDto>> GetMessageDetailsAsync(int id)
+        //{
+        //    var result = await _messageService.GetMessageDetailsAsync(id);
 
-            GetRemoteIpLogData(Request.HttpContext.Request);
-            if (result == null) { return NotFound("Message details not found."); }
+        //    GetRemoteIpLogData(Request.HttpContext.Request);
+        //    if (result == null) { return NotFound("Message details not found."); }
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
 
         //[HttpGet("{id},{beforeTime},{count},{sort}")]
@@ -113,7 +117,7 @@ namespace WebApiAssignemnt.Controller
             if (count == 0)
                 count = 20;
             var result = await _messageService.GetMessageDetailsListAsync(id, beforeTime, count, sort);
-            GetRemoteIpLogData(Request.HttpContext.Request); 
+            GetRemoteIpLogData(Request.HttpContext.Request);
             if (result == null) { return NotFound("Message details not found."); }
             return Ok(result);
         }
@@ -122,7 +126,7 @@ namespace WebApiAssignemnt.Controller
         {
             string username = await GetLoginUserName();
             string? ip_address = Request.HttpContext.Connection.RemoteIpAddress?.ToString();//This will return ::1 if executing api on same computer
-            
+
             var result = await _logService.AddLogRequest(ip_address, username, request);
             // var ip = logRequests;
             //return "Ok";
@@ -131,6 +135,8 @@ namespace WebApiAssignemnt.Controller
         private async Task<string> GetLoginUserName()
         {
             string username = _httpContextAccessor.HttpContext.User.Identity.Name;
+            if (string.IsNullOrEmpty(username))
+                return username = "";
             return username.ToString();
         }
 

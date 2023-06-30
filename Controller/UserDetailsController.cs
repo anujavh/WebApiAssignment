@@ -66,8 +66,7 @@ namespace WebApiAssignemnt.Controller
             return Ok(result); //status code 200
         }
 
-        [HttpPost("login")]
-        [Authorize]
+        [HttpPost("login")] 
         public async Task<ActionResult<ResLoginUserDto>> LoginUser(ReqLoginUserDto loginUser)
         {
             if (loginUser.Email == null) { return this.ValidationProblem(); } //status code 400
@@ -102,7 +101,7 @@ namespace WebApiAssignemnt.Controller
 
         private async void GetRemoteIpLogData(HttpRequest request)
         {
-            string userName = await GetLoginUserName();
+            string userName = await GetLoginUserName(); 
             string? ip_address = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
             var result = await _logService.AddLogRequest(ip_address, userName, request);
